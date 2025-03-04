@@ -1,0 +1,23 @@
+{
+  "name": "song-backend",
+  "version": "1.0.0",
+  "description": "backend song application(s)",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pargonate/song-backend.git"
+  },
+  "author": "Nathan Parker (Pargonate)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pargonate/song-backend/issues"
+  },
+  "homepage": "https://github.com/pargonate/song-backend#readme",
+  "dependencies": {
+    "express": "^4.21.2",
+    "nodemon": "^3.1.9"
+  }
+}
