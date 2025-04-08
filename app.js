@@ -2,7 +2,8 @@ const express = require('express'); // setup (tags in HTML)
 var cors = require('cors'); // allow cross-origin requests (allowing requests from the same device)
 
 const bodyParser = require('body-parser');
-const Song = require('./models/songs.js')
+const Song = require('./models/songs.js');
+const req = require('express/lib/request.js');
 
 const app = express(); // access the express server
 app.use(cors()); // use cors
@@ -11,7 +12,12 @@ app.use(bodyParser.json()); // Parse body JSON
 const router = express.Router(); // access the express router
 const port = 3000;
 
-// grab all songs
+//
+// API Routes
+//	Handle browser requests (looking like a URL), that is 
+//	dynamically handled by the server using a function.
+//
+
 router.get('/songs', async(request, response) => {
 	try {
 		const songs = await Song.find({});
@@ -24,41 +30,35 @@ router.get('/songs', async(request, response) => {
 
 router.post('/songs', async(request, response) => {
 	try {
-		const song = new Song(request.body);
+		const song = await new Song(request.body);
 		await song.save(); // WRITE to DB
 		response.status(201).json(song)
 		console.log(song);
 	} catch (error) {
 		response.status(400).send(error);
+		console.log(error)
 	}
 })
 
-//
-// API Routes
-//	Handle browser requests (looking like a URL), that is 
-//	dynamically handled by the server using a function.
-//
+router.get('/songs/:id', async(request, response) => {
+	try {
+		const song = await Song.findById(request.params.id);
+		response.json(song)
+	} catch (error) {
+		response.status(400).send(error)
+	}
+})
 
-// router.get('/songs', (req, res) => {
-// 	const songs = [
-// 		{
-// 			title: "Look at Me",
-// 			artist: "Juice WRLD",
-// 			release_date: null,
-// 			streams: 10000,
-// 			genre: ["Hip-Hop", "Rap"],
-// 		},
-// 		{
-// 			title: "Lucid Dreams",
-// 			artist: "Juice WRLD",
-// 			release_date: new Date(2018, 4, 4),
-// 			streams: 2600000000,
-// 			genre: ["Hip-Hop", "Rap"],
-// 		},
-// 	]
-
-// 	res.json(songs);
-// });
+router.put("/songs/:id", async(request, response) => {
+	try {
+		const song = request.body;
+		await Song.updateOne({_id: request.params.id}, song);
+		console.log(song)
+		response.sendStatus(204)
+	} catch (error) {
+		response.status(400).send(error);
+	}
+});
 
 app.use("/api", router); // enforce /api route
 app.listen(port);
